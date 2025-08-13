@@ -2,10 +2,10 @@
 
 # Integrantes
 
-## Tomás Ramírez
-## Santiago Rodríguez
-## Santiago Ríos
-## Maria Isabel Sierra 
+### Tomás Ramírez
+### Santiago Rodríguez
+### Santiago Ríos
+### Maria Isabel Sierra 
 
 # Tecnologías
-## Java Springboot
+### Java Springboot
