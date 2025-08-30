@@ -2,8 +2,6 @@
 
 # Integrantes
 
-### Tomás Ramírez
-### Santiago Rodríguez
 ### Santiago Ríos
 ### Maria Isabel Sierra 
 
