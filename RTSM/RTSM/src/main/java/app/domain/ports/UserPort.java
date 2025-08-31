@@ -1,12 +1,13 @@
 package app.domain.ports;
 
 import app.domain.model.User;
+import java.util.List;
 
 public interface UserPort {
-	
-	public User findByDocument(User user) throws Exception;
-	public User findByUserName(User user) throws Exception;
-	public void save (User user) throws Exception;
-
-	
+    void save(User user) throws Exception;
+    
+    User findByUserName(String userName); 
+    User findByDocument(Long document);
+    List<User> findAll();
+    void delete(User user) throws Exception;
 }

@@ -1,116 +1,32 @@
 package app.domain.model;
 
 import java.sql.Date;
+import java.util.Map; // Para el diccionario 
 
 public class ClinicalRecord {
 	
-	private long id;
-	private Pet pet;
-	private User veterinarian;
-	private Date date;
-	private String motive;
-	private String Diagnosis;
-	private String medicine;
-	private String medicalProcedure;
-	private String doce;
-	private ClinicalOrder clinicalOrder;
-	private String vaccinationRecord;
-	private String allergies;
-	private String proceddureDetail;
-	private String symptoms;
-	private boolean status;
+	private Long patientDocument; 
+	private Date attentionDate; 
 	
+	// El resto de la historia clínica lo majenamos como un diccionario
+	private Map<String, Object> recordDetails; 
 	
-	public long getId() {
-		return id;
+	public Long getPatientDocument() {
+		return patientDocument;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setPatientDocument(Long patientDocument) {
+		this.patientDocument = patientDocument;
 	}
-	public Pet getPet() {
-		return pet;
+	public Date getAttentionDate() {
+		return attentionDate;
 	}
-	public void setPet(Pet pet) {
-		this.pet = pet;
+	public void setAttentionDate(Date attentionDate) {
+		this.attentionDate = attentionDate;
 	}
-	public User getVeterinarian() {
-		return veterinarian;
+	public Map<String, Object> getRecordDetails() {
+		return recordDetails;
 	}
-	public void setVeterinarian(User veterinarian) {
-		this.veterinarian = veterinarian;
+	public void setRecordDetails(Map<String, Object> recordDetails) {
+		this.recordDetails = recordDetails;
 	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	public String getMotive() {
-		return motive;
-	}
-	public void setMotive(String motive) {
-		this.motive = motive;
-	}
-	public String getDiagnosis() {
-		return Diagnosis;
-	}
-	public void setDiagnosis(String diagnosis) {
-		Diagnosis = diagnosis;
-	}
-	public String getMedicine() {
-		return medicine;
-	}
-	public void setMedicine(String medicine) {
-		this.medicine = medicine;
-	}
-	public String getMedicalProcedure() {
-		return medicalProcedure;
-	}
-	public void setMedicalProcedure(String medicalProcedure) {
-		this.medicalProcedure = medicalProcedure;
-	}
-	public String getDoce() {
-		return doce;
-	}
-	public void setDoce(String doce) {
-		this.doce = doce;
-	}
-	public ClinicalOrder getClinicalOrder() {
-		return clinicalOrder;
-	}
-	public void setClinicalOrder(ClinicalOrder clinicalOrder) {
-		this.clinicalOrder = clinicalOrder;
-	}
-	public String getVaccinationRecord() {
-		return vaccinationRecord;
-	}
-	public void setVaccinationRecord(String vaccinationRecord) {
-		this.vaccinationRecord = vaccinationRecord;
-	}
-	public String getAllergies() {
-		return allergies;
-	}
-	public void setAllergies(String allergies) {
-		this.allergies = allergies;
-	}
-	public String getProceddureDetail() {
-		return proceddureDetail;
-	}
-	public void setProceddureDetail(String proceddureDetail) {
-		this.proceddureDetail = proceddureDetail;
-	}
-	public String getSymptoms() {
-		return symptoms;
-	}
-	public void setSymptoms(String symptoms) {
-		this.symptoms = symptoms;
-	}
-	public boolean isStatus() {
-		return status;
-	}
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-	
-
 }

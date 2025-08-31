@@ -1,11 +1,10 @@
 package app.domain.model;
 
-public class User extends Person{
+public class User extends Person {
 	
-	public String userName;
-	public String password;
+	private String userName; 
+	private String password; 
 	
-
 	public String getUserName() {
 		return userName;
 	}
@@ -18,5 +17,4 @@ public class User extends Person{
 	public void setPassword(String password) {
 		this.password = password;
 	} 
-
 }

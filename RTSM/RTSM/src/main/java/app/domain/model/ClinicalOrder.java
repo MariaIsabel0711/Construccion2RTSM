@@ -1,60 +1,39 @@
 package app.domain.model;
 
 import java.sql.Date;
+ 
 
 public class ClinicalOrder {
 	
-	private long id;
-	private Pet pet;
-	private Person owner;
-	private User veterinarian;
-	private String medicine;
-	private String doce;
-	private Date date;
+	private long orderNumber; // # De orden
+	private Long patientDocument; // Cédula del paciente
+	private Long medicalDocument; // Cédula del médico que la generó
+	private Date creationDate; // Fecha de creación
 	
 	
-	public long getId() {
-		return id;
+	
+	public long getOrderNumber() {
+		return orderNumber;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setOrderNumber(long orderNumber) {
+		this.orderNumber = orderNumber;
 	}
-	public Pet getPet() {
-		return pet;
+	public Long getPatientDocument() {
+		return patientDocument;
 	}
-	public void setPet(Pet pet) {
-		this.pet = pet;
+	public void setPatientDocument(Long patientDocument) {
+		this.patientDocument = patientDocument;
 	}
-	public Person getOwner() {
-		return owner;
+	public Long getMedicalDocument() {
+		return medicalDocument;
 	}
-	public void setOwner(Person owner) {
-		this.owner = owner;
+	public void setMedicalDocument(Long medicalDocument) {
+		this.medicalDocument = medicalDocument;
 	}
-	public User getVeterinarian() {
-		return veterinarian;
+	public Date getCreationDate() {
+		return creationDate;
 	}
-	public void setVeterinarian(User veterinarian) {
-		this.veterinarian = veterinarian;
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
-	public String getMedicine() {
-		return medicine;
-	}
-	public void setMedicine(String medicine) {
-		this.medicine = medicine;
-	}
-	public String getDoce() {
-		return doce;
-	}
-	public void setDoce(String doce) {
-		this.doce = doce;
-	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-
 }

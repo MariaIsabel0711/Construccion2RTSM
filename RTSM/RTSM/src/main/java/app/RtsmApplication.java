@@ -1,3 +1,5 @@
+// AQUÍ ES DONDE SE INICIA TODO EL PROGRAMA
+
 package app;
 
 import org.springframework.boot.SpringApplication;
