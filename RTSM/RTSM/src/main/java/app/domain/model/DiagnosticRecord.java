@@ -1,7 +1,6 @@
 package app.domain.model;
 
 public class DiagnosticRecord {
-    private long orderNumber;
     private int itemNumber;
     private String diagnosticAidName;
     private int quantity;
@@ -11,12 +10,7 @@ public class DiagnosticRecord {
 
     public DiagnosticRecord() {}
 
-    public long getOrderNumber() {
-        return orderNumber;
-    }
-    public void setOrderNumber(long orderNumber) {
-        this.orderNumber = orderNumber;
-    }
+
     public int getItemNumber() {
         return itemNumber;
     }

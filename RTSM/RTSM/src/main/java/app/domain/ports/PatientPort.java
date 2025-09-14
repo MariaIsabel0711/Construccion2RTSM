@@ -8,5 +8,5 @@ public interface PatientPort {
     Patient findByDocument(Long document);
     List<Patient> findAll();
     void delete(Patient patient) throws Exception;
-   
+    void update(Patient patient) throws Exception; 
 }

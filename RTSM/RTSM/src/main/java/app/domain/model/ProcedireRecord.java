@@ -1,7 +1,7 @@
 package app.domain.model;
 
 public class ProcedireRecord {
-    private long orderNumber;
+    // private long orderNumber; se maneja por la relación con ClinicalOrder
     private int itemNumber;
     private String procedureName;
     private int repetitions;
@@ -12,12 +12,6 @@ public class ProcedireRecord {
 
     public ProcedireRecord() {}
 
-    public long getOrderNumber() {
-        return orderNumber;
-    }
-    public void setOrderNumber(long orderNumber) {
-        this.orderNumber = orderNumber;
-    }
     public int getItemNumber() {
         return itemNumber;
     }

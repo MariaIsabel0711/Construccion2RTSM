@@ -9,4 +9,6 @@ public interface InvoicePort {
     List<Invoice> findByPatientDocument(Long patientDocument);
     List<Invoice> findAll();
     void delete(Invoice invoice) throws Exception;
+    Double getAnnualCopaySum(Long patientDocument, int year); 
 }
+    

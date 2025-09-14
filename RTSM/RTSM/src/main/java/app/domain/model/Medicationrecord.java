@@ -1,7 +1,7 @@
 package app.domain.model;
 
 public class Medicationrecord {
-    private long orderNumber;
+    // private long orderNumber; se maneja por la relación con ClinicalOrder
     private int itemNumber;
     private String medicationName;
     private String dose;
@@ -10,12 +10,6 @@ public class Medicationrecord {
 
     public Medicationrecord() {}
 
-    public long getOrderNumber() {
-        return orderNumber;
-    }
-    public void setOrderNumber(long orderNumber) {
-        this.orderNumber = orderNumber;
-    }
     public int getItemNumber() {
         return itemNumber;
     }

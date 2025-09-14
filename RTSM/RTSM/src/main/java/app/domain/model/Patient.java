@@ -7,14 +7,13 @@ public class Patient extends Person {
     private String emergencyContactName;
     private String emergencyContactRelationship;
     private String emergencyContactPhoneNumber;
-
     private String insuranceCompanyName;
     private String policyNumber;
-    private boolean policyStatus; // Vigencia de la póliza (true = activa, false = inactiva)
-    private Date policyEndDate; // Fecha de finalización de la póliza
+    private boolean policyStatus;
+    private Date policyEndDate;
 
     public Patient() {
-        super(); 
+        super();
     }
 
     public String getEmergencyContactName() {
