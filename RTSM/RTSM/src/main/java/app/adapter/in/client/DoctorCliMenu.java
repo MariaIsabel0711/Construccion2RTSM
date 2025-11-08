@@ -1,5 +1,10 @@
 package app.adapter.in.client;
 
+import app.adapter.in.builder.ClinicalOrderBuilder;
+import app.adapter.in.builder.ClinicalRecordBuilder;
+import app.adapter.in.builder.DiagnosticRecordBuilder;
+import app.adapter.in.builder.MedicationRecordBuilder;
+import app.adapter.in.builder.ProcedureRecordBuilder;
 import app.adapter.in.util.InputReader;
 import app.application.usecases.DoctorUseCase;
 import app.domain.model.ClinicalOrder;
@@ -12,17 +17,30 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class DoctorCliMenu implements CliMenu {
 
     private final DoctorUseCase doctorUseCase;
+    private final ClinicalRecordBuilder clinicalRecordBuilder;
+    private final ClinicalOrderBuilder clinicalOrderBuilder;
+    private final MedicationRecordBuilder medicationRecordBuilder;
+    private final ProcedureRecordBuilder procedureRecordBuilder;
+    private final DiagnosticRecordBuilder diagnosticRecordBuilder;
 
-    public DoctorCliMenu(DoctorUseCase doctorUseCase) {
+    public DoctorCliMenu(DoctorUseCase doctorUseCase,
+                         ClinicalRecordBuilder clinicalRecordBuilder,
+                         ClinicalOrderBuilder clinicalOrderBuilder,
+                         MedicationRecordBuilder medicationRecordBuilder,
+                         ProcedureRecordBuilder procedureRecordBuilder,
+                         DiagnosticRecordBuilder diagnosticRecordBuilder) {
         this.doctorUseCase = doctorUseCase;
+        this.clinicalRecordBuilder = clinicalRecordBuilder;
+        this.clinicalOrderBuilder = clinicalOrderBuilder;
+        this.medicationRecordBuilder = medicationRecordBuilder;
+        this.procedureRecordBuilder = procedureRecordBuilder;
+        this.diagnosticRecordBuilder = diagnosticRecordBuilder;
     }
 
     @Override
@@ -40,25 +58,13 @@ public class DoctorCliMenu implements CliMenu {
     public void handleOption(String option) {
         try {
             switch (option) {
-                case "1":
-                    crearActualizarHistoriaClinica();
-                    break;
-                case "2":
-                    registrarDiagnosticoTratamiento();
-                    break;
-                case "3":
-                    prescribirOrden();
-                    break;
-                case "4":
-                    verHistoriaClinica();
-                    break;
-                case "5":
-                    verOrdenesPaciente();
-                    break;
-                case "6":
-                    return; 
-                default:
-                    System.out.println("Opción inválida.");
+                case "1" -> crearActualizarHistoriaClinica();
+                case "2" -> registrarDiagnosticoTratamiento();
+                case "3" -> prescribirOrden();
+                case "4" -> verHistoriaClinica();
+                case "5" -> verOrdenesPaciente();
+                case "6" -> { return; }
+                default -> System.out.println("Opción inválida.");
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -70,22 +76,20 @@ public class DoctorCliMenu implements CliMenu {
         Long patientDocument = InputReader.readLong("Ingrese cédula del paciente: ");
         Date attentionDate = InputReader.readDate("Ingrese fecha de atención (YYYY-MM-DD): ");
 
-        Map<String, Object> recordDetails = new HashMap<>();
-        recordDetails.put("medicalDocument", InputReader.readLong("Cédula del médico: "));
-        recordDetails.put("motivoConsulta", InputReader.readString("Motivo de consulta: "));
-        recordDetails.put("sintomas", InputReader.readString("Síntomas: "));
-        recordDetails.put("diagnostico", InputReader.readString("Diagnóstico: "));
+        Long medicalDocument = InputReader.readLong("Cédula del médico: ");
+        String motivoConsulta = InputReader.readString("Motivo de consulta: ");
+        String sintomas = InputReader.readString("Síntomas: ");
+        String diagnostico = InputReader.readString("Diagnóstico: ");
 
-        ClinicalRecord clinicalRecord = new ClinicalRecord();
-        clinicalRecord.setPatientDocument(patientDocument);
-        clinicalRecord.setAttentionDate(attentionDate);
-        clinicalRecord.setRecordDetails(recordDetails);
+        ClinicalRecord clinicalRecord = clinicalRecordBuilder.build(
+                patientDocument, attentionDate, medicalDocument, motivoConsulta, sintomas, diagnostico
+        );
 
         try {
             doctorUseCase.updateClinicalRecord(clinicalRecord);
             System.out.println("Historia clínica actualizada exitosamente.");
         } catch (Exception e) {
-            if (e.getMessage().contains("no existe")) {
+            if (e.getMessage() != null && e.getMessage().contains("no existe")) {
                 doctorUseCase.createClinicalRecord(clinicalRecord);
                 System.out.println("Historia clínica creada exitosamente.");
             } else {
@@ -112,11 +116,7 @@ public class DoctorCliMenu implements CliMenu {
         long orderNumber = InputReader.readLong("Número de orden (único): ");
         Date creationDate = Date.valueOf(LocalDate.now());
 
-        ClinicalOrder order = new ClinicalOrder();
-        order.setOrderNumber(orderNumber);
-        order.setPatientDocument(patientDocument);
-        order.setMedicalDocument(medicalDocument);
-        order.setCreationDate(creationDate);
+        ClinicalOrder order = clinicalOrderBuilder.build(orderNumber, patientDocument, medicalDocument, creationDate);
 
         List<Medicationrecord> medications = new ArrayList<>();
         List<ProcedireRecord> procedures = new ArrayList<>();
@@ -124,46 +124,51 @@ public class DoctorCliMenu implements CliMenu {
 
         if (InputReader.readBoolean("\n¿Desea añadir medicamentos a la orden?")) {
             while (true) {
-                Medicationrecord med = new Medicationrecord();
-                med.setItemNumber(InputReader.readInt("Número de ítem (único en esta orden): "));
-                med.setMedicationName(InputReader.readString("Nombre del medicamento: "));
-                med.setDose(InputReader.readString("Dosis: "));
-                med.setTreatmentDuration(InputReader.readString("Duración del tratamiento: "));
-                med.setCost(InputReader.readDouble("Costo: "));
-                medications.add(med);
+                int itemNumber = InputReader.readInt("Número de ítem (único en esta orden): ");
+                String name = InputReader.readString("Nombre del medicamento: ");
+                String dose = InputReader.readString("Dosis: ");
+                String duration = InputReader.readString("Duración del tratamiento: ");
+                double cost = InputReader.readDouble("Costo: ");
+
+                medications.add(
+                    medicationRecordBuilder.build(itemNumber, name, dose, duration, cost)
+                );
+
                 if (!InputReader.readBoolean("¿Añadir otro medicamento?")) break;
             }
         }
 
         if (InputReader.readBoolean("\n¿Desea añadir procedimientos a la orden?")) {
             while (true) {
-                ProcedireRecord proc = new ProcedireRecord();
-                proc.setItemNumber(InputReader.readInt("Número de ítem (único en esta orden): "));
-                proc.setProcedureName(InputReader.readString("Nombre del procedimiento: "));
-                proc.setRepetitions(InputReader.readInt("Veces que se repite: "));
-                proc.setFrequency(InputReader.readString("Frecuencia: "));
-                proc.setCost(InputReader.readDouble("Costo: "));
-                proc.setRequiresSpecialist(InputReader.readBoolean("¿Requiere especialista?"));
-                if (proc.isRequiresSpecialist()) {
-                    proc.setSpecialistRoleId(InputReader.readLong("ID de especialista (rol): "));
-                }
-                procedures.add(proc);
+                int itemNumber = InputReader.readInt("Número de ítem (único en esta orden): ");
+                String procName = InputReader.readString("Nombre del procedimiento: ");
+                int repetitions = InputReader.readInt("Veces que se repite: ");
+                String frequency = InputReader.readString("Frecuencia: ");
+                double cost = InputReader.readDouble("Costo: ");
+                boolean requiresSpecialist = InputReader.readBoolean("¿Requiere especialista?");
+                Long specialistRoleId = requiresSpecialist ? InputReader.readLong("ID de especialista (rol): ") : null;
+
+                procedures.add(
+                    procedureRecordBuilder.build(itemNumber, procName, repetitions, frequency, cost, requiresSpecialist, specialistRoleId)
+                );
+
                 if (!InputReader.readBoolean("¿Añadir otro procedimiento?")) break;
             }
         }
 
         if (InputReader.readBoolean("\n¿Desea añadir ayudas diagnósticas a la orden?")) {
             while (true) {
-                DiagnosticRecord diag = new DiagnosticRecord();
-                diag.setItemNumber(InputReader.readInt("Número de ítem (único en esta orden): "));
-                diag.setDiagnosticName(InputReader.readString("Nombre del examen: "));
-                diag.setQuantity(InputReader.readInt("Cantidad: "));
-                diag.setCost(InputReader.readDouble("Costo: "));
-                diag.setRequiresSpecialist(InputReader.readBoolean("¿Requiere especialista?"));
-                if (diag.isRequiresSpecialist()) {
-                    diag.setSpecialistRoleId(InputReader.readLong("ID de especialista (rol): "));
-                }
-                diagnostics.add(diag);
+                int itemNumber = InputReader.readInt("Número de ítem (único en esta orden): ");
+                String diagName = InputReader.readString("Nombre del examen: ");
+                int quantity = InputReader.readInt("Cantidad: ");
+                double cost = InputReader.readDouble("Costo: ");
+                boolean requiresSpecialist = InputReader.readBoolean("¿Requiere especialista?");
+                Long specialistRoleId = requiresSpecialist ? InputReader.readLong("ID de especialista (rol): ") : null;
+
+                diagnostics.add(
+                    diagnosticRecordBuilder.build(itemNumber, diagName, quantity, cost, requiresSpecialist, specialistRoleId)
+                );
+
                 if (!InputReader.readBoolean("¿Añadir otra ayuda diagnóstica?")) break;
             }
         }

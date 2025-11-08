@@ -1,5 +1,6 @@
 package app.adapter.in.client;
 
+import app.adapter.in.builder.UserBuilder;
 import app.adapter.in.util.InputReader;
 import app.application.usecases.HumanResourcesUseCase;
 import app.domain.model.User;
@@ -12,9 +13,11 @@ import java.sql.Date;
 public class HumanResourcesCliMenu implements CliMenu {
 
     private final HumanResourcesUseCase hrUseCase;
+    private final UserBuilder userBuilder;
 
-    public HumanResourcesCliMenu(HumanResourcesUseCase hrUseCase) {
+    public HumanResourcesCliMenu(HumanResourcesUseCase hrUseCase, UserBuilder userBuilder) {
         this.hrUseCase = hrUseCase;
+        this.userBuilder = userBuilder;
     }
 
     @Override
@@ -30,19 +33,11 @@ public class HumanResourcesCliMenu implements CliMenu {
     public void handleOption(String option) {
         try {
             switch (option) {
-                case "1":
-                    crearUsuarioEmpleado();
-                    break;
-                case "2":
-                    eliminarUsuarioEmpleado();
-                    break;
-                case "3":
-                    actualizarDatosEmpleado();
-                    break;
-                case "4":
-                    return; 
-                default:
-                    System.out.println("Opción inválida.");
+                case "1" -> crearUsuarioEmpleado();
+                case "2" -> eliminarUsuarioEmpleado();
+                case "3" -> actualizarDatosEmpleado();
+                case "4" -> { return; }
+                default -> System.out.println("Opción inválida.");
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -51,45 +46,38 @@ public class HumanResourcesCliMenu implements CliMenu {
 
     private void crearUsuarioEmpleado() throws Exception {
         System.out.println("\n--- Crear Nuevo Usuario Empleado ---");
-        User user = new User();
 
-        user.setFullName(InputReader.readString("Nombre completo: "));
-        user.setDocument(InputReader.readLong("Cédula (número): "));
-        user.setEmail(InputReader.readString("Correo electrónico: "));
-        user.setPhoneNumber(InputReader.readString("Teléfono (1-10 dígitos): "));
-        user.setDateOfBirth(InputReader.readDate("Fecha de nacimiento (YYYY-MM-DD): "));
-        user.setAddress(InputReader.readString("Dirección (máx 30 caracteres): "));
-        user.setGender(InputReader.readString("Género (M/F/Otro): "));
-        user.setUserName(InputReader.readString("Nombre de usuario (máx 15 caracteres, solo letras y números): "));
-        user.setPassword(InputReader.readString("Contraseña (mín 8 caracteres, 1 mayúscula, 1 número, 1 especial): "));
+        String fullName = InputReader.readString("Nombre completo: ");
+        Long document = InputReader.readLong("Cédula (número): ");
+        String email = InputReader.readString("Correo electrónico: ");
+        String phone = InputReader.readString("Teléfono (1-10 dígitos): ");
+        Date dob = InputReader.readDate("Fecha de nacimiento (YYYY-MM-DD): ");
+        String address = InputReader.readString("Dirección (máx 30 caracteres): ");
+        String gender = InputReader.readString("Género (M/F/Otro): ");
+        String userName = InputReader.readString("Nombre de usuario (máx 15 caracteres, solo letras y números): ");
+        String password = InputReader.readString("Contraseña (mín 8 caracteres, 1 mayúscula, 1 número, 1 especial): ");
 
         String rolStr = InputReader.readString("Seleccione Rol (MEDICO, ENFERMERA, PERSONAL_ADMINISTRATIVO, SOPORTE_INFORMACION, RECURSOS_HUMANOS): ").toUpperCase();
+        Role role;
         try {
-            user.setRole(Role.valueOf(rolStr)); 
+            role = Role.valueOf(rolStr);
         } catch (IllegalArgumentException e) {
             System.out.println("Rol inválido. Asignando PERSONAL_ADMINISTRATIVO por defecto.");
-            user.setRole(Role.PERSONAL_ADMINISTRATIVO); 
+            role = Role.PERSONAL_ADMINISTRATIVO;
         }
 
+        User user = userBuilder.build(fullName, document, email, phone, dob, address, gender, userName, password, role);
+
         switch (user.getRole()) {
-            case MEDICO:
-                hrUseCase.createDoctor(user);
-                break;
-            case ENFERMERA:
-                hrUseCase.createNurse(user);
-                break;
-            case PERSONAL_ADMINISTRATIVO:
-                hrUseCase.createAdministrativeStaff(user);
-                break;
-            case SOPORTE_INFORMACION:
-                hrUseCase.createInformationSupport(user);
-                break;
-            case RECURSOS_HUMANOS:
-                hrUseCase.createAdministrativeStaff(user); 
-                break;
-            default:
+            case MEDICO -> hrUseCase.createDoctor(user);
+            case ENFERMERA -> hrUseCase.createNurse(user);
+            case PERSONAL_ADMINISTRATIVO -> hrUseCase.createAdministrativeStaff(user);
+            case SOPORTE_INFORMACION -> hrUseCase.createInformationSupport(user);
+            case RECURSOS_HUMANOS -> hrUseCase.createAdministrativeStaff(user); 
+            default -> {
                 System.out.println("Rol no reconocido, no se pudo crear el usuario.");
                 return;
+            }
         }
         System.out.println("Usuario empleado creado exitosamente.");
     }
@@ -113,23 +101,22 @@ public class HumanResourcesCliMenu implements CliMenu {
 
         System.out.println("Deje en blanco los campos que no desea actualizar.");
         String fullName = InputReader.readString("Nombre completo (" + existingUser.getFullName() + "): ");
-        if (!fullName.isEmpty()) existingUser.setFullName(fullName);
-
         String email = InputReader.readString("Correo electrónico (" + existingUser.getEmail() + "): ");
-        if (!email.isEmpty()) existingUser.setEmail(email);
-
         String phone = InputReader.readString("Teléfono (" + existingUser.getPhoneNumber() + "): ");
-        if (!phone.isEmpty()) existingUser.setPhoneNumber(phone);
-
         String address = InputReader.readString("Dirección (" + existingUser.getAddress() + "): ");
-        if (!address.isEmpty()) existingUser.setAddress(address);
-
         String dobStr = InputReader.readString("Fecha de nacimiento (YYYY-MM-DD) (" + existingUser.getDateOfBirth() + "): ");
-        if (!dobStr.isEmpty()) existingUser.setDateOfBirth(Date.valueOf(dobStr));
-
         String gender = InputReader.readString("Género (M/F/Otro) (" + existingUser.getGender() + "): ");
-        if (!gender.isEmpty()) existingUser.setGender(gender);
 
+        Date dob = null;
+        if (!dobStr.isEmpty()) {
+            try {
+                dob = Date.valueOf(dobStr);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Fecha inválida. No se actualizará la fecha de nacimiento.");
+            }
+        }
+
+        userBuilder.applyPersonalDataUpdates(existingUser, fullName, email, phone, address, dob, gender);
         hrUseCase.updateUserPersonalData(existingUser);
         System.out.println("Datos de empleado actualizados exitosamente.");
     }

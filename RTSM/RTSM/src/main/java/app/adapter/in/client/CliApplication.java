@@ -1,7 +1,8 @@
 package app.adapter.in.client;
 
-import app.adapter.in.util.InputReader;
 import org.springframework.stereotype.Component;
+
+import app.adapter.in.util.InputReader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,9 +58,9 @@ public class CliApplication {
         do {
             menu.displayMenu();
             subOption = InputReader.readString("Ingrese opción: ");
-            if (!subOption.equals("4") && !subOption.equals("5") && !subOption.equals("6")) { 
+            if (!subOption.equals("4") && !subOption.equals("5") && !subOption.equals("6")) {
                 menu.handleOption(subOption);
             }
-        } while (!subOption.equals("4") && !subOption.equals("5") && !subOption.equals("6")); 
+        } while (!subOption.equals("4") && !subOption.equals("5") && !subOption.equals("6"));
     }
 }

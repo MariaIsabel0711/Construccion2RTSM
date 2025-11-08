@@ -10,7 +10,7 @@ public class RtsmApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(RtsmApplication.class);
-        app.setWebApplicationType(org.springframework.boot.WebApplicationType.NONE);
+        app.setWebApplicationType(org.springframework.boot.WebApplicationType.NONE); //configura la aplicación para que no se inicie como una aplicación web
         
         ConfigurableApplicationContext context = app.run(args);
         

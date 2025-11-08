@@ -27,22 +27,12 @@ public class NurseCliMenu implements CliMenu {
     public void handleOption(String option) {
         try {
             switch (option) {
-                case "1":
-                    registrarSignosVitales();
-                    break;
-                case "2":
-                    registrarMedicamentosAdministrados();
-                    break;
-                case "3":
-                    registrarProcedimientosRealizados();
-                    break;
-                case "4":
-                    anadirObservacionesHistoriaClinica();
-                    break;
-                case "5":
-                    return; 
-                default:
-                    System.out.println("Opción inválida.");
+                case "1" -> registrarSignosVitales();
+                case "2" -> registrarMedicamentosAdministrados();
+                case "3" -> registrarProcedimientosRealizados();
+                case "4" -> anadirObservacionesHistoriaClinica();
+                case "5" -> { return; }
+                default -> System.out.println("Opción inválida.");
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
