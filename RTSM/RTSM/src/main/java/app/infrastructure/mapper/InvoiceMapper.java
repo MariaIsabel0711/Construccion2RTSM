@@ -8,11 +8,10 @@ import org.springframework.stereotype.Component;
 public class InvoiceMapper {
 
     public Invoice toDomain(InvoiceEntity entity) {
-        if (entity == null) {
-            return null;
-        }
+        if (entity == null) return null;
+
         Invoice domain = new Invoice();
-        domain.setId(entity.getId());
+        domain.setId(entity.getId()); // tu dominio puede ser long; si entity.getId()==null, quedará 0 en el dominio según tu setter
         domain.setPatientDocument(entity.getPatientDocument());
         domain.setMedicalDocument(entity.getMedicalDocument());
         domain.setInsuranceCompanyName(entity.getInsuranceCompanyName());
@@ -27,11 +26,16 @@ public class InvoiceMapper {
     }
 
     public InvoiceEntity toEntity(Invoice domain) {
-        if (domain == null) {
-            return null;
-        }
+        if (domain == null) return null;
+
         InvoiceEntity entity = new InvoiceEntity();
-        entity.setId(domain.getId());
+
+        if (domain.getId() > 0L) {
+            entity.setId(domain.getId());
+        } else {
+            entity.setId(null); // fuerza INSERT
+        }
+
         entity.setPatientDocument(domain.getPatientDocument());
         entity.setMedicalDocument(domain.getMedicalDocument());
         entity.setInsuranceCompanyName(domain.getInsuranceCompanyName());

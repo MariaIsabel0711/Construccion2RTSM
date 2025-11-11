@@ -6,6 +6,7 @@ import app.infrastructure.entity.InvoiceEntity;
 import app.infrastructure.mapper.InvoiceMapper;
 import app.infrastructure.repository.InvoiceJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -25,9 +26,16 @@ public class InvoiceJpaAdapter implements InvoicePort {
     }
 
     @Override
+    @Transactional
     public void save(Invoice invoice) throws Exception {
         InvoiceEntity entity = invoiceMapper.toEntity(invoice);
-        invoiceJpaRepository.save(entity);
+
+        if (entity.getId() != null && entity.getId() == 0L) {
+            entity.setId(null);
+        }
+
+        invoiceJpaRepository.save(entity); // INSERT si id=null; UPDATE si id!=null
+        // invoice.setId(entity.getId() != null ? entity.getId() : invoice.getId());
     }
 
     @Override
@@ -39,23 +47,23 @@ public class InvoiceJpaAdapter implements InvoicePort {
     @Override
     public List<Invoice> findByPatientDocument(Long patientDocument) {
         List<InvoiceEntity> entities = invoiceJpaRepository.findByPatientDocument(patientDocument);
-        return entities.stream()
-                .map(invoiceMapper::toDomain)
-                .collect(Collectors.toList());
+        return entities.stream().map(invoiceMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
     public List<Invoice> findAll() {
         List<InvoiceEntity> entities = invoiceJpaRepository.findAll();
-        return entities.stream()
-                .map(invoiceMapper::toDomain)
-                .collect(Collectors.toList());
+        return entities.stream().map(invoiceMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public void delete(Invoice invoice) throws Exception {
-        InvoiceEntity entity = invoiceMapper.toEntity(invoice);
-        invoiceJpaRepository.delete(entity);
+        long id = invoice.getId();
+        if (id <= 0L) {
+            throw new IllegalArgumentException("No se puede borrar Invoice sin id válido (>0). Valor recibido: " + id);
+        }
+        invoiceJpaRepository.deleteById(id);
     }
 
     @Override
