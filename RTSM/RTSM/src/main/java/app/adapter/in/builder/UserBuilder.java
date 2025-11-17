@@ -4,11 +4,13 @@ import app.domain.model.User;
 import app.domain.model.enums.Role;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class UserBuilder {
-    public User build(String fullName, Long document, String email, String phone, Date dob,
+    
+    public User build(String fullName, String document, String email, String phone, String dob,
                       String address, String gender, String userName, String password, Role role) {
         User u = new User();
         u.setFullName(fullName);
@@ -20,17 +22,22 @@ public class UserBuilder {
         u.setGender(gender);
         u.setUserName(userName);
         u.setPassword(password);
-        u.setRole(role);
+        
+        // Crear Set<Role> porque User tiene Set<Role>, no Role individual
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        u.setRoles(roles);
+        
         return u;
     }
 
     public User applyPersonalDataUpdates(User u, String fullName, String email, String phone,
-                                         String address, Date dob, String gender) {
+                                         String address, String dob, String gender) {
         if (fullName != null && !fullName.isEmpty()) u.setFullName(fullName);
         if (email != null && !email.isEmpty()) u.setEmail(email);
         if (phone != null && !phone.isEmpty()) u.setPhoneNumber(phone);
         if (address != null && !address.isEmpty()) u.setAddress(address);
-        if (dob != null) u.setDateOfBirth(dob);
+        if (dob != null && !dob.isEmpty()) u.setDateOfBirth(dob);
         if (gender != null && !gender.isEmpty()) u.setGender(gender);
         return u;
     }

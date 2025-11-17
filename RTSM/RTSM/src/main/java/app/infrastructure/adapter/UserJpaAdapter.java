@@ -34,7 +34,7 @@ public class UserJpaAdapter implements UserPort {
     }
 
     @Override
-    public User findByDocument(Long document) {
+    public User findByDocument(String document) {  
         UserEntity entity = userJpaRepository.findByDocument(document);
         return userMapper.toDomain(entity);
     }

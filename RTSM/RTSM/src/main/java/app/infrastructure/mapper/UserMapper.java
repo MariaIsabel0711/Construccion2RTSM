@@ -1,8 +1,12 @@
 package app.infrastructure.mapper;
 
 import app.domain.model.User;
+import app.domain.model.enums.Role;
 import app.infrastructure.entity.UserEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class UserMapper {
@@ -27,7 +31,12 @@ public class UserMapper {
         entity.setGender(user.getGender());
         entity.setUserName(user.getUserName());
         entity.setPassword(user.getPassword());
-        entity.setRole(user.getRole()); 
+        
+        // Convertir Set<Role> a un solo Role para la entidad
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            entity.setRole(user.getRoles().iterator().next());
+        }
+        
         return entity;
     }
 
@@ -48,7 +57,12 @@ public class UserMapper {
         user.setGender(entity.getGender());
         user.setUserName(entity.getUserName());
         user.setPassword(entity.getPassword());
-        user.setRole(entity.getRole()); 
+        
+        if (entity.getRole() != null) {
+            Set<Role> roles = new HashSet<>();
+            roles.add(entity.getRole());
+            user.setRoles(roles);
+        }
 
         return user;
     }

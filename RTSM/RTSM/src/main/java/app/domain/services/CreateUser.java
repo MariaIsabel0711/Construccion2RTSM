@@ -32,7 +32,7 @@ public class CreateUser {
             throw new Exception("La contraseña es obligatoria.");
         }
         
-        if (user.getRole() == null) { 
+        if (user.getRoles() == null || user.getRoles().isEmpty()) { 
             throw new Exception("El rol es obligatorio.");
         }
         

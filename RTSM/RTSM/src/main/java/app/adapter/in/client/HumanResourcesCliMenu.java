@@ -7,8 +7,6 @@ import app.domain.model.User;
 import app.domain.model.enums.Role;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-
 @Component
 public class HumanResourcesCliMenu implements CliMenu {
 
@@ -48,14 +46,14 @@ public class HumanResourcesCliMenu implements CliMenu {
         System.out.println("\n--- Crear Nuevo Usuario Empleado ---");
 
         String fullName = InputReader.readString("Nombre completo: ");
-        Long document = InputReader.readLong("Cédula (número): ");
+        String document = InputReader.readString("Cédula: ");
         String email = InputReader.readString("Correo electrónico: ");
-        String phone = InputReader.readString("Teléfono (1-10 dígitos): ");
-        Date dob = InputReader.readDate("Fecha de nacimiento (YYYY-MM-DD): ");
-        String address = InputReader.readString("Dirección (máx 30 caracteres): ");
+        String phone = InputReader.readString("Teléfono: ");
+        String dob = InputReader.readString("Fecha de nacimiento (YYYY-MM-DD): ");
+        String address = InputReader.readString("Dirección: ");
         String gender = InputReader.readString("Género (M/F/Otro): ");
-        String userName = InputReader.readString("Nombre de usuario (máx 15 caracteres, solo letras y números): ");
-        String password = InputReader.readString("Contraseña (mín 8 caracteres, 1 mayúscula, 1 número, 1 especial): ");
+        String userName = InputReader.readString("Nombre de usuario: ");
+        String password = InputReader.readString("Contraseña: ");
 
         String rolStr = InputReader.readString("Seleccione Rol (MEDICO, ENFERMERA, PERSONAL_ADMINISTRATIVO, SOPORTE_INFORMACION, RECURSOS_HUMANOS): ").toUpperCase();
         Role role;
@@ -73,7 +71,7 @@ public class HumanResourcesCliMenu implements CliMenu {
             case ENFERMERA -> hrUseCase.createNurse(user);
             case PERSONAL_ADMINISTRATIVO -> hrUseCase.createAdministrativeStaff(user);
             case SOPORTE_INFORMACION -> hrUseCase.createInformationSupport(user);
-            case RECURSOS_HUMANOS -> hrUseCase.createAdministrativeStaff(user); 
+            case RECURSOS_HUMANOS -> hrUseCase.createAdministrativeStaff(user);
             default -> {
                 System.out.println("Rol no reconocido, no se pudo crear el usuario.");
                 return;
@@ -84,14 +82,14 @@ public class HumanResourcesCliMenu implements CliMenu {
 
     private void eliminarUsuarioEmpleado() throws Exception {
         System.out.println("\n--- Eliminar Usuario Empleado ---");
-        Long document = InputReader.readLong("Ingrese cédula del usuario a eliminar: ");
+        String document = InputReader.readString("Ingrese cédula del usuario a eliminar: ");
         hrUseCase.deleteUser(document);
         System.out.println("Usuario empleado eliminado exitosamente.");
     }
 
     private void actualizarDatosEmpleado() throws Exception {
         System.out.println("\n--- Actualizar Datos de Empleado ---");
-        Long document = InputReader.readLong("Ingrese cédula del empleado a actualizar: ");
+        String document = InputReader.readString("Ingrese cédula del empleado a actualizar: ");
 
         User existingUser = hrUseCase.findUserByDocument(document);
         if (existingUser == null) {
@@ -107,16 +105,7 @@ public class HumanResourcesCliMenu implements CliMenu {
         String dobStr = InputReader.readString("Fecha de nacimiento (YYYY-MM-DD) (" + existingUser.getDateOfBirth() + "): ");
         String gender = InputReader.readString("Género (M/F/Otro) (" + existingUser.getGender() + "): ");
 
-        Date dob = null;
-        if (!dobStr.isEmpty()) {
-            try {
-                dob = Date.valueOf(dobStr);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Fecha inválida. No se actualizará la fecha de nacimiento.");
-            }
-        }
-
-        userBuilder.applyPersonalDataUpdates(existingUser, fullName, email, phone, address, dob, gender);
+        userBuilder.applyPersonalDataUpdates(existingUser, fullName, email, phone, address, dobStr, gender);
         hrUseCase.updateUserPersonalData(existingUser);
         System.out.println("Datos de empleado actualizados exitosamente.");
     }

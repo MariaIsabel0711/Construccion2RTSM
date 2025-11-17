@@ -6,7 +6,9 @@ import app.domain.ports.UserPort;
 import app.domain.services.CreateUser;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class HumanResourcesUseCase {
@@ -20,26 +22,35 @@ public class HumanResourcesUseCase {
     }
 
     public void createDoctor(User user) throws Exception {
-        user.setRole(Role.MEDICO); 
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.MEDICO);
+        user.setRoles(roles);
         createUser.create(user);
     }
-
+    
+    
     public void createNurse(User user) throws Exception {
-        user.setRole(Role.ENFERMERA); 
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ENFERMERA);
+        user.setRoles(roles);
         createUser.create(user);
     }
 
     public void createAdministrativeStaff(User user) throws Exception {
-        user.setRole(Role.PERSONAL_ADMINISTRATIVO); 
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.PERSONAL_ADMINISTRATIVO);
+        user.setRoles(roles);
         createUser.create(user);
     }
 
     public void createInformationSupport(User user) throws Exception {
-        user.setRole(Role.SOPORTE_INFORMACION); 
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.SOPORTE_INFORMACION);
+        user.setRoles(roles);
         createUser.create(user);
     }
 
-    public void deleteUser(Long document) throws Exception {
+    public void deleteUser(String document) throws Exception {
         User user = userPort.findByDocument(document);
         if (user == null) {
             throw new Exception("Usuario no encontrado con documento: " + document);
@@ -47,7 +58,7 @@ public class HumanResourcesUseCase {
         userPort.delete(user);
     }
 
-    public User findUserByDocument(Long document) {
+    public User findUserByDocument(String document) {
         return userPort.findByDocument(document);
     }
 

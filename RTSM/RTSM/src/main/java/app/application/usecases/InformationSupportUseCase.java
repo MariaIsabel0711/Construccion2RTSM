@@ -46,7 +46,7 @@ public class InformationSupportUseCase {
         return userPort.findAll();
     }
 
-    public User findUserByDocument(Long document) {
+    public User findUserByDocument(String document) {
         return userPort.findByDocument(document);
     }
 
